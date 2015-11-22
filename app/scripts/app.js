@@ -17,6 +17,10 @@ angular
     'ngSanitize',
     'ngTouch'
   ])
+  .value('baseUrl', 'https://nsi-prenota-v2.azurewebsites.net')
+  .config(function($httpProvider) {
+    $httpProvider.defaults.withCredentials = true;
+  })
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
@@ -28,6 +32,11 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl',
         controllerAs: 'about'
+      })
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl',
+        controllerAs: 'login'
       })
       .otherwise({
         redirectTo: '/'

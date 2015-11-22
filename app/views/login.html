@@ -1,0 +1,22 @@
+<form novalidate name="loginForm" ng-submit="login.doLogin()">
+  <div class="form-group">
+    <label>Username</label>
+    <input class="form-control"
+           name="loginTxt"
+           type="text"
+           ng-model="login.credentials.username"
+           required>
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input class="form-control"
+           type="password"
+           ng-model="login.credentials.password"
+           required>
+  </div>
+  <button class="btn btn-default"
+          type="submit"
+          ng-disabled="loginForm.$invalid">
+    Login
+  </button>
+</form>
