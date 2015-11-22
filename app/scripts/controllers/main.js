@@ -8,10 +8,11 @@
  * Controller of the angularYoDemoApp
  */
 angular.module('angularYoDemoApp')
-  .controller('MainCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('MainCtrl', function ($http, baseUrl) {
+    var main = this;
+
+    $http.get(baseUrl + '/api/Stanza')
+      .then(function (res) {
+        main.stanze = res.data;
+      });
   });

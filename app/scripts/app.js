@@ -38,7 +38,19 @@ angular
         controller: 'LoginCtrl',
         controllerAs: 'login'
       })
+      .when('/stanza/:id', {
+        templateUrl: 'views/stanza.html',
+        controller: 'StanzaCtrl',
+        controllerAs: 'stanza'
+      })
       .otherwise({
         redirectTo: '/'
       });
+  })
+  .run(function($http, baseUrl, Auth) {
+    $http.get(baseUrl + '/api/Stanza').then(function () {
+      Auth.isLoggedIn(true);
+    }, function() {
+      Auth.isLoggedIn(false);
+    });
   });

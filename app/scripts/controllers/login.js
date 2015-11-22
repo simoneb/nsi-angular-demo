@@ -8,7 +8,7 @@
  * Controller of the angularYoDemoApp
  */
 angular.module('angularYoDemoApp')
-  .controller('LoginCtrl', function ($http, $location, baseUrl) {
+  .controller('LoginCtrl', function ($http, $location, baseUrl, Auth) {
     this.credentials = {
       username: 'admin',
       password: 'Password1!'
@@ -20,13 +20,14 @@ angular.module('angularYoDemoApp')
         Password: this.credentials.password,
         IsPersistent: true
       }).then(function () {
-        $http.get(baseUrl + '/api/Stanza').then(function (res) {
+        $http.get(baseUrl + '/api/Stanza').then(function () {
           $location.path('/');
+          Auth.isLoggedIn(true);
         }, function () {
-          alert('errore');
+          Auth.isLoggedIn(false);
         });
       }, function () {
-        alert('errore');
+        Auth.isLoggedIn(false);
       });
     };
   });
