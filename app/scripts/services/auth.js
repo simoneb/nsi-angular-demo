@@ -8,7 +8,7 @@
  * Factory in the angularYoDemoApp.
  */
 angular.module('angularYoDemoApp')
-  .factory('Auth', function ($http, baseUrl) {
+  .service('Auth', function ($http, baseUrl) {
     var loggedIn = false,
       user;
 

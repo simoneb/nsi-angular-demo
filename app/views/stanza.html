@@ -1,5 +1,5 @@
-<h4>Stanza</h4>
-<p>Nome: {{stanza.stanza.Nome}}</p>
+<p>Nome stanza: {{stanza.stanza.Nome}}</p>
 <p>Capienza: {{stanza.stanza.Capienza}}</p>
-<h4>Disponibilità</h4>
-<div ng-show="!stanza.disponibilita.length">Non c'è disponibilità per la stanza</div>
+<div
+  ui-calendar="stanza.calendarConfig.calendar"
+  ng-model="stanza.eventSources"></div>

@@ -15,7 +15,8 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'ui.calendar'
   ])
   .value('baseUrl', 'https://nsi-prenota-v2.azurewebsites.net')
   .config(function($httpProvider) {
