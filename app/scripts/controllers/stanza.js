@@ -8,7 +8,7 @@
  * Controller of the angularYoDemoApp
  */
 angular.module('angularYoDemoApp')
-  .controller('StanzaCtrl', function ($routeParams, baseUrl, $http, $log) {
+  .controller('StanzaCtrl', function ($routeParams, baseUrl, $http) {
     var stanza = this;
     var id = $routeParams.id;
 
@@ -16,7 +16,12 @@ angular.module('angularYoDemoApp')
 
     stanza.calendarConfig = {
       calendar: {
-        viewRender: function (view, element) {
+        timezone: 'UTC',
+        header: {
+          left: 'month agendaWeek agendaDay',
+          center: 'title'
+        },
+        viewRender: function (view) {
           loadPeriodiStato(view.start, view.end);
         }
       }
@@ -29,11 +34,14 @@ angular.module('angularYoDemoApp')
         .then(function (res) {
           stanza.stanza = res.data;
         });
+    }
 
-      $http.get(baseUrl + '/api/Disponibilita/')
-        .then(function (res) {
-          stanza.disponibilita = res.data;
-        });
+    function convertPeriodiStatoToCalendarEvents(acc, periodoStato) {
+      if (acc.length) {
+        acc[acc.length - 1].Fine = periodoStato.Inizio;
+      }
+
+      return acc.concat(periodoStato);
     }
 
     function loadPeriodiStato(start, end) {
@@ -42,16 +50,19 @@ angular.module('angularYoDemoApp')
         url: baseUrl + '/api/Stanza/' + id + '/PeriodiStato',
         params: { inizio: start.toDate(), fine: end.toDate() }
       }).then(function (res) {
-        stanza.eventSources[0] = res.data
-          .filter(function (evento) {
-            return true || evento.stato == 2;
-          }).map(function (evento) {
-            return {
-              title: getTitle(evento),
-              start: new Date(evento.Inizio),
-              allDay: true
-            }
-          });
+        stanza.eventSources[0] =
+          res.data
+            .reduce(convertPeriodiStatoToCalendarEvents, [])
+            .filter(function (evento) {
+              return evento.Stato !== 2;
+            })
+            .map(function (evento) {
+              return {
+                title: getTitle(evento),
+                start: new Date(evento.Inizio),
+                end: new Date(evento.Fine || end.toDate())
+              };
+            });
       });
     }
 

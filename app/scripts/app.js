@@ -16,7 +16,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ui.calendar'
+    'ui.calendar',
+    'ui.bootstrap'
   ])
   .value('baseUrl', 'https://nsi-prenota-v2.azurewebsites.net')
   .config(function($httpProvider) {
@@ -27,7 +28,15 @@ angular
       .when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl',
-        controllerAs: 'main'
+        controllerAs: 'main',
+        resolve: {
+          stanze: function(baseUrl, $http) {
+            return $http.get(baseUrl + '/api/Stanza');
+          },
+          utenti: function(baseUrl, $http) {
+            return $http.get(baseUrl + '/api/Utente');
+          }
+        }
       })
       .when('/about', {
         templateUrl: 'views/about.html',
