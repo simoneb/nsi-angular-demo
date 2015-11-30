@@ -28,34 +28,52 @@
     <h3 class="modal-title">{{modal.event.roomName}}</h3>
   </div>
   <div class="modal-body">
-    <div ng-if="modal.event.available">
+    <div>
       <form name="modal.eventForm" novalidate>
         <div class="form-group"
              ng-class="{ 'has-error': modal.eventForm.start.$dirty && modal.eventForm.start.$invalid }">
           <label>
             Inizio
           </label>
-          <input type="date"
-                 name="start"
-                 class="form-control"
-                 ng-model="modal.createdEvent.start"
-                 required>
+
+          <p class="input-group">
+            <input type="text"
+                   class="form-control"
+                   uib-datepicker-popup
+                   is-open="modal.startOpened"
+                   name="start"
+                   class="form-control"
+                   ng-model="modal.createdEvent.start"
+                   required/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="modal.startOpened = !modal.startOpened"><i
+                  class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+          </p>
+
         </div>
         <div class="form-group"
              ng-class="{ 'has-error': modal.eventForm.end.$dirty && modal.eventForm.end.$invalid }">
           <label>
             Fine
           </label>
-          <input name="end"
-                 type="date"
-                 class="form-control"
-                 ng-model="modal.createdEvent.end"
-                 required>
+
+          <p class="input-group">
+            <input type="text"
+                   class="form-control"
+                   uib-datepicker-popup
+                   is-open="modal.endOpened"
+                   name="end"
+                   class="form-control"
+                   ng-model="modal.createdEvent.end"
+                   required/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="modal.endOpened = !modal.endOpened"><i
+                  class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+          </p>
         </div>
       </form>
-    </div>
-    <div ng-if="!modal.event.available">
-      non disponibile
     </div>
   </div>
   <div class="modal-footer">

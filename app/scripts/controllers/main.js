@@ -11,27 +11,27 @@ angular.module('angularYoDemoApp')
   .controller('MainCtrl', function ($http, $uibModal, $route, baseUrl, Auth, stanze, utenti) {
     var main = this;
 
-    main.eventSources = [[], []];
     main.stanze = stanze.data;
     main.utenti = utenti.data;
+    main.eventSources = Array.apply(null, Array(main.stanze.length)).map(function() { return [] });
+
+    var roomsColors = main.stanze.map(getRandomColor);
 
     main.calendarConfig = {
       calendar: {
-        timezone: 'UTC',
         header: {
           left: 'month agendaWeek agendaDay',
           center: 'title'
         },
         viewRender: function (view) {
-          loadDisponibilita(view.start, view.end);
-          loadPrenotazioni(view.start, view.end);
+          loadPeriodiStato(view.start, view.end);
         },
         eventClick: handleEventClick
       }
     };
 
     function handleEventClick(event) {
-      console.log(event);
+      if(!event.available) return;
 
       $uibModal.open({
         templateUrl: 'eventModal.html',
@@ -54,6 +54,53 @@ angular.module('angularYoDemoApp')
           $route.reload();
         });
       });
+    }
+
+    function convertPeriodiStatoToCalendarEvents(acc, periodoStato) {
+      if (acc.length) {
+        acc[acc.length - 1].Fine = periodoStato.Inizio;
+      }
+
+      return acc.concat(periodoStato);
+    }
+
+    function loadPeriodiStato(start, end) {
+      main.stanze.forEach(function(stanza, stanzaIdx) {
+        $http({
+          method: 'GET',
+          url: baseUrl + '/api/Stanza/' + stanza.Id + '/PeriodiStato',
+          params: { inizio: start.toDate(), fine: end.toDate() }
+        }).then(function (res) {
+          main.eventSources[stanzaIdx] =
+            res.data
+              .reduce(convertPeriodiStatoToCalendarEvents, [])
+              .filter(function(evento) {
+                return evento.Stato !== 0;
+              })
+              .map(function (evento) {
+                return {
+                  roomId: stanza.Id,
+                  roomName: stanza.Nome,
+                  available: evento.Stato === 2,
+                  color: evento.Stato === 1 ? 'grey' : roomsColors[stanzaIdx],
+                  title: stanza.Nome + ' (' + getTitle(evento) + ')',
+                  start: new Date(evento.Inizio),
+                  end: new Date(evento.Fine || end.toDate())
+                };
+              });
+        });
+      });
+    }
+
+    function getTitle(evento) {
+      switch (evento.Stato) {
+        case 0:
+          return 'Non disponibile';
+        case 1:
+          return 'Occupata';
+        case 2:
+          return 'Disponibile';
+      }
     }
 
     function loadPrenotazioni(start, end) {
@@ -101,5 +148,14 @@ angular.module('angularYoDemoApp')
       return main.stanze.filter(function (stanza) {
         return stanza.Id === evento.StanzaId;
       })[0].Nome;
+    }
+
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF'.split('');
+      var color = '#';
+      for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
     }
   });

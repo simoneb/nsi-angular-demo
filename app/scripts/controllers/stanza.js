@@ -16,7 +16,8 @@ angular.module('angularYoDemoApp')
 
     stanza.calendarConfig = {
       calendar: {
-        timezone: 'UTC',
+        lang: 'it',
+        timezone: 'local',
         header: {
           left: 'month agendaWeek agendaDay',
           center: 'title'
@@ -53,9 +54,9 @@ angular.module('angularYoDemoApp')
         stanza.eventSources[0] =
           res.data
             .reduce(convertPeriodiStatoToCalendarEvents, [])
-            .filter(function (evento) {
-              return evento.Stato !== 2;
-            })
+            //.filter(function (evento) {
+            //  return evento.Stato !== 2;
+            //})
             .map(function (evento) {
               return {
                 title: getTitle(evento),

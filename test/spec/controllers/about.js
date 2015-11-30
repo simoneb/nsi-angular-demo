@@ -5,17 +5,17 @@ describe('Controller: AboutCtrl', function () {
   // load the controller's module
   beforeEach(module('angularYoDemoApp'));
 
-  var AboutCtrl,
-    scope;
+  var AboutCtrl;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope) {
-    scope = $rootScope.$new();
+  beforeEach(inject(function ($controller) {
     AboutCtrl = $controller('AboutCtrl', {
-      $scope: scope
-      // place here mocked dependencies
     });
   }));
+
+  it('should create a property named awesomeThings', function() {
+    expect(AboutCtrl.awesomeThings).toBeDefined();
+  });
 
 
 });

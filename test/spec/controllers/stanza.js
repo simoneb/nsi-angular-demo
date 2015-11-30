@@ -26,7 +26,7 @@ describe('Controller: StanzaCtrl', function () {
   });
 
   it('should request details about room', function () {
-    $httpBackend.whenGET(baseUrl + '/api/Stanza/abc').respond(200, { ciao: 'pippo' });
+    $httpBackend.whenGET(baseUrl + '/api/Stanza/abc').respond({ ciao: 'pippo' });
 
     $httpBackend.flush();
 
