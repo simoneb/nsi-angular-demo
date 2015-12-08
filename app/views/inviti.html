@@ -1,0 +1,33 @@
+<div class="row">
+  <h2>Inviti ricevuti</h2>
+
+  <p ng-show="!inviti.inviti.length">Non ci sono inviti ricevuti che in attesa di risposta</p>
+  <table class="table" ng-show="inviti.inviti.length">
+    <thead>
+    <tr>
+      <th>Stanza</th>
+      <th>Data</th>
+      <th>Host</th>
+      <th>Azione</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="invito in inviti.inviti | orderBy:'Prenotazione_Inizio'"
+        ng-class="{ danger: invito.Stato == 2, success: invito.Stato == 1 }">
+      <td>{{ invito.Stanza_Nome }}</td>
+      <td>{{ invito.Prenotazione_Inizio | date:'medium' }}</td>
+      <td>{{ invito.Creatore_Nome }} {{ invito.Creatore_Cognome }}</td>
+      <td ng-show="invito.Stato == 0">
+        <button class="btn btn-primary btn-sm" ng-click="inviti.accept(invito)">Accetta</button>
+        <button class="btn btn-danger btn-sm" ng-click="inviti.reject(invito)">Rifiuta</button>
+      </td>
+      <td ng-show="invito.Stato == 1">
+        Accettato
+      </td>
+      <td ng-show="invito.Stato == 2">
+        Rifiutato
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

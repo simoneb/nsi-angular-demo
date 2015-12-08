@@ -25,7 +25,7 @@
 
 <script type="text/ng-template" id="eventModal.html">
   <div class="modal-header">
-    <h3 class="modal-title">{{modal.event.roomName}}</h3>
+    <h3 class="modal-title">Prenota: {{modal.event.roomName}}</h3>
   </div>
   <div class="modal-body">
     <div>
@@ -81,6 +81,37 @@
             type="button"
             ng-click="modal.$close(modal.createdEvent)"
             ng-disabled="modal.eventForm.$invalid">
+      OK
+    </button>
+    <button class="btn btn-warning" type="button" ng-click="modal.$dismiss()">Cancel</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="inviteModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Crea inviti</h3>
+  </div>
+  <div class="modal-body">
+    <div>
+      <input type="text"
+             ng-model="whatever"
+             uib-typeahead="(utente.Nome + ' ' + utente.Cognome) for utente in modal.utenti | filter:{Nome: $viewValue}"
+             typeahead-on-select="modal.invitati.push($item)"
+             class="form-control">
+    </div>
+    <p>
+      <ul>
+        <li ng-repeat="invitato in modal.invitati">
+          {{invitato.Nome}} {{invitato.Cognome}}
+        </li>
+      </ul>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary"
+            type="button"
+            ng-click="modal.$close(modal.invitati)"
+            ng-disabled="!modal.invitati.length">
       OK
     </button>
     <button class="btn btn-warning" type="button" ng-click="modal.$dismiss()">Cancel</button>

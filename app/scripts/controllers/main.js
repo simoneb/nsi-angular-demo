@@ -8,12 +8,14 @@
  * Controller of the angularYoDemoApp
  */
 angular.module('angularYoDemoApp')
-  .controller('MainCtrl', function ($http, $uibModal, $route, baseUrl, Auth, stanze, utenti) {
+  .controller('MainCtrl', function ($http, $uibModal, $route, baseUrl, Auth, stanze, utenti, $q) {
     var main = this;
 
     main.stanze = stanze.data;
     main.utenti = utenti.data;
-    main.eventSources = Array.apply(null, Array(main.stanze.length)).map(function() { return [] });
+    main.eventSources = Array.apply(null, Array(main.stanze.length)).map(function () {
+      return []
+    });
 
     var roomsColors = main.stanze.map(getRandomColor);
 
@@ -30,8 +32,17 @@ angular.module('angularYoDemoApp')
       }
     };
 
+    function creaPrenotazione(event, createdEvent) {
+      return $http.post(baseUrl + '/api/Prenotazione', {
+        CreatoreId: Auth.getUser().Id,
+        StanzaId: event.roomId,
+        Inizio: createdEvent.start,
+        Fine: createdEvent.end
+      });
+    }
+
     function handleEventClick(event) {
-      if(!event.available) return;
+      if (!event.available) return;
 
       $uibModal.open({
         templateUrl: 'eventModal.html',
@@ -45,13 +56,28 @@ angular.module('angularYoDemoApp')
         controllerAs: 'modal',
         bindToController: true
       }).result.then(function (createdEvent) {
-        $http.post(baseUrl + '/api/Prenotazione', {
-          CreatoreId: Auth.getUser().Id,
-          StanzaId: event.roomId,
-          Inizio: createdEvent.start,
-          Fine: createdEvent.end
-        }).then(function () {
-          $route.reload();
+        creaPrenotazione(event, createdEvent).then(function (res) {
+          var idPrenotazione = res.data;
+
+          $uibModal.open({
+            templateUrl: 'inviteModal.html',
+            controller: function (utenti) {
+              this.utenti = utenti.data;
+              this.invitati = [];
+            },
+            controllerAs: 'modal',
+            bindToController: true,
+            resolve: {
+              utenti: $http.get(baseUrl + '/api/Utente')
+            }
+          }).result.then(function (invitati) {
+            $q.all(invitati.map(function (invitato) {
+              return $http.post(baseUrl + '/api/Invito', {
+                PrenotazioneId: idPrenotazione,
+                InvitatoId: invitato.Id
+              });
+            }))
+          });
         });
       });
     }
@@ -65,7 +91,7 @@ angular.module('angularYoDemoApp')
     }
 
     function loadPeriodiStato(start, end) {
-      main.stanze.forEach(function(stanza, stanzaIdx) {
+      main.stanze.forEach(function (stanza, stanzaIdx) {
         $http({
           method: 'GET',
           url: baseUrl + '/api/Stanza/' + stanza.Id + '/PeriodiStato',
@@ -74,7 +100,7 @@ angular.module('angularYoDemoApp')
           main.eventSources[stanzaIdx] =
             res.data
               .reduce(convertPeriodiStatoToCalendarEvents, [])
-              .filter(function(evento) {
+              .filter(function (evento) {
                 return evento.Stato !== 0;
               })
               .map(function (evento) {
@@ -153,7 +179,7 @@ angular.module('angularYoDemoApp')
     function getRandomColor() {
       var letters = '0123456789ABCDEF'.split('');
       var color = '#';
-      for (var i = 0; i < 6; i++ ) {
+      for (var i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
       }
       return color;
