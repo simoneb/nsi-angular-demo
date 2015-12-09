@@ -35,6 +35,9 @@ module.exports = function(config) {
       'bower_components/fullcalendar/dist/fullcalendar.js',
       'bower_components/angular-ui-calendar/src/calendar.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'bower_components/angular-toastr/dist/angular-toastr.tpls.js',
+      'bower_components/signalr/jquery.signalR.js',
+      'bower_components/angular-signalr-hub/signalr-hub.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",

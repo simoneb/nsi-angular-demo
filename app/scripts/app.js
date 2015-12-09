@@ -17,7 +17,9 @@ angular
     'ngSanitize',
     'ngTouch',
     'ui.calendar',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'toastr',
+    'SignalR'
   ])
   .value('baseUrl', 'https://nsi-prenota-v2.azurewebsites.net')
   .config(function ($httpProvider) {
@@ -67,7 +69,7 @@ angular
         redirectTo: '/'
       });
   })
-  .run(function ($http, baseUrl, Auth, $location) {
+  .run(function ($http, baseUrl, Auth, $location, notifications) {
     $http.get(baseUrl + '/api/Stanza').then(function () {
       Auth.isLoggedIn(true);
     }, function () {

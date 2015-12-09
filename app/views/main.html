@@ -94,8 +94,9 @@
   <div class="modal-body">
     <div>
       <input type="text"
+             placeholder="scrivi il nome della persona da invitare"
              ng-model="whatever"
-             uib-typeahead="(utente.Nome + ' ' + utente.Cognome) for utente in modal.utenti | filter:{Nome: $viewValue}"
+             uib-typeahead="(utente.Nome + ' ' + utente.Cognome) for utente in modal.utenti | filter:$viewValue"
              typeahead-on-select="modal.invitati.push($item)"
              class="form-control">
     </div>

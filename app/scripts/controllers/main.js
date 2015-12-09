@@ -8,7 +8,7 @@
  * Controller of the angularYoDemoApp
  */
 angular.module('angularYoDemoApp')
-  .controller('MainCtrl', function ($http, $uibModal, $route, baseUrl, Auth, stanze, utenti, $q) {
+  .controller('MainCtrl', function ($http, $uibModal, $route, baseUrl, Auth, stanze, utenti, $q, toastr) {
     var main = this;
 
     main.stanze = stanze.data;
@@ -76,7 +76,7 @@ angular.module('angularYoDemoApp')
                 PrenotazioneId: idPrenotazione,
                 InvitatoId: invitato.Id
               });
-            }))
+            }));
           });
         });
       });
